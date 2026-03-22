@@ -220,17 +220,17 @@ export default function Home() {
           </p>
 
           {/* Stats */}
-          <div className="flex items-center justify-center gap-8 mt-10">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <MapPinIcon className="w-4 h-4 text-blue-600" />
+          <div className="flex items-center justify-center gap-4 mt-10">
+            <div className="flex items-center gap-2.5 px-5 py-2.5 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
+              <MapPinIcon className="w-5 h-5 text-blue-600" />
               <span className="font-semibold">87 pays</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <StethoscopeIcon className="w-4 h-4 text-green-600" />
+            <div className="flex items-center gap-2.5 px-5 py-2.5 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
+              <StethoscopeIcon className="w-5 h-5 text-green-600" />
               <span className="font-semibold">45,672 m&eacute;decins</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <ClockIcon className="w-4 h-4 text-purple-600" />
+            <div className="flex items-center gap-2.5 px-5 py-2.5 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
+              <ClockIcon className="w-5 h-5 text-purple-600" />
               <span className="font-semibold">12 min de r&eacute;ponse</span>
             </div>
           </div>
