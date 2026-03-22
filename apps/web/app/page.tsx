@@ -145,15 +145,6 @@ const profiles = [
     iconColor: "text-teal-600",
     href: "/collectivite",
   },
-  {
-    title: "Admin",
-    description: "G\u00e9rez la plateforme",
-    icon: ShieldIcon,
-    color: "bg-orange-500",
-    iconBg: "bg-orange-100",
-    iconColor: "text-orange-500",
-    href: "/admin",
-  },
 ];
 
 const steps = [
@@ -271,7 +262,7 @@ export default function Home() {
           Choisissez votre profil
         </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {profiles.map((profile) => (
             <Link
               key={profile.title}
