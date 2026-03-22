@@ -91,6 +91,7 @@ const profiles = [
     color: "bg-blue-900",
     iconBg: "bg-blue-100",
     iconColor: "text-blue-600",
+    href: "/dashboard",
   },
   {
     title: "M\u00e9decin",
@@ -99,6 +100,7 @@ const profiles = [
     color: "bg-green-500",
     iconBg: "bg-green-100",
     iconColor: "text-green-600",
+    href: "/doctor",
   },
   {
     title: "Organisation",
@@ -107,6 +109,7 @@ const profiles = [
     color: "bg-purple-500",
     iconBg: "bg-purple-100",
     iconColor: "text-purple-600",
+    href: "/organization",
   },
   {
     title: "Admin",
@@ -115,6 +118,7 @@ const profiles = [
     color: "bg-orange-500",
     iconBg: "bg-orange-100",
     iconColor: "text-orange-500",
+    href: "/admin",
   },
 ];
 
@@ -176,26 +180,26 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-blue-50 to-teal-50" />
         <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-blue-400 via-teal-400 to-blue-300 opacity-60" />
 
-        <div className="relative max-w-4xl mx-auto px-4 py-20 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 py-10 sm:py-14 text-center">
           {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-10">
-            <div className="w-12 h-12 bg-blue-800 rounded-xl flex items-center justify-center">
-              <HeartIcon className="w-7 h-7 text-green-400" />
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-blue-800 rounded-xl flex items-center justify-center">
+              <HeartIcon className="w-6 h-6 text-green-400" />
             </div>
             <div className="text-left">
-              <h1 className="text-2xl font-bold text-blue-900">Lyvora</h1>
+              <h1 className="text-xl font-bold text-blue-900">Lyvora</h1>
               <p className="text-xs text-gray-500">Healthcare, Anywhere</p>
             </div>
           </div>
 
           {/* Title */}
-          <h2 className="text-4xl sm:text-5xl font-bold text-blue-900 leading-tight mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-900 leading-tight mb-4">
             Trouvez un m&eacute;decin disponible
             <br />
             &agrave; moins d&apos;1 heure
           </h2>
 
-          <p className="text-gray-600 max-w-2xl mx-auto mb-8 text-lg">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-base sm:text-lg">
             La premi&egrave;re plateforme mondiale qui connecte patients et
             m&eacute;decins en temps r&eacute;el, partout dans le monde, pour
             lutter contre les d&eacute;serts m&eacute;dicaux.
@@ -204,28 +208,28 @@ export default function Home() {
           {/* CTA Button */}
           <Link
             href="/register"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800 transition-colors text-base"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800 transition-colors text-base"
           >
             Commencer maintenant
             <ArrowRightIcon className="w-4 h-4" />
           </Link>
 
-          <p className="text-sm text-gray-500 mt-4">
+          <p className="text-sm text-gray-500 mt-3">
             Connectez-vous pour acc&eacute;der aux dashboards Patient,
             M&eacute;decin, Organisation ou Admin
           </p>
 
           {/* Stats */}
-          <div className="flex items-center justify-center gap-8 mt-10">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
               <MapPinIcon className="w-4 h-4 text-blue-600" />
               <span className="font-semibold">87 pays</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
               <StethoscopeIcon className="w-4 h-4 text-green-600" />
               <span className="font-semibold">45,672 m&eacute;decins</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
               <ClockIcon className="w-4 h-4 text-purple-600" />
               <span className="font-semibold">12 min de r&eacute;ponse</span>
             </div>
@@ -234,8 +238,8 @@ export default function Home() {
       </section>
 
       {/* Profiles Section */}
-      <section className="max-w-5xl mx-auto px-4 py-20">
-        <h3 className="text-2xl font-bold text-center text-gray-900 mb-10">
+      <section className="max-w-5xl mx-auto px-4 py-14">
+        <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">
           Choisissez votre profil
         </h3>
 
@@ -257,7 +261,7 @@ export default function Home() {
                 {profile.description}
               </p>
               <Link
-                href={`/login?role=${profile.title.toLowerCase()}`}
+                href={profile.href}
                 className={`block w-full py-2.5 ${profile.color} text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity`}
               >
                 Acc&eacute;der &rarr;
@@ -268,8 +272,8 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-5xl mx-auto px-4 pb-20">
-        <h3 className="text-2xl font-bold text-center text-gray-900 mb-12">
+      <section className="max-w-5xl mx-auto px-4 pb-14">
+        <h3 className="text-2xl font-bold text-center text-gray-900 mb-10">
           Comment &ccedil;a fonctionne ?
         </h3>
 
