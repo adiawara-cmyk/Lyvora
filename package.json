@@ -1,0 +1,35 @@
+{
+  "name": "lyvora",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Global Health Access Platform - Connecting patients and doctors worldwide",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "db:generate": "pnpm --filter api prisma:generate",
+    "db:push": "pnpm --filter api prisma:push",
+    "db:migrate": "pnpm --filter api prisma:migrate",
+    "db:studio": "pnpm --filter api prisma:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}

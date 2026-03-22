@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(pnpm --version)",
+      "Bash(npx create-next-app@latest web --typescript --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --use-pnpm --no-turbopack --no-experimental-app)",
+      "Bash(rm -rf web)",
+      "Bash(mkdir -p web)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm approve-builds:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where npx:*)",
+      "Bash(where node:*)",
+      "Bash(where cmd:*)"
+    ]
+  }
+}

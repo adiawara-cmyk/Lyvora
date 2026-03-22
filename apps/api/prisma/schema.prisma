@@ -1,0 +1,232 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+  ORG
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ConsultationType {
+  IN_PERSON
+  TELECONSULT
+  BOTH
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum AppointmentType {
+  IN_PERSON
+  TELECONSULT
+}
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+}
+
+enum OrgType {
+  MUNICIPALITY
+  NGO
+  HOSPITAL
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  role          UserRole
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?
+  mfaEnabled    Boolean   @default(false)
+  mfaSecret     String?
+  emailVerified Boolean   @default(false)
+  phoneVerified Boolean   @default(false)
+  locale        String    @default("en")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  doctorProfile DoctorProfile?
+  patient       Patient?
+  organization  Organization?
+
+  @@map("users")
+}
+
+model DoctorProfile {
+  id                 String             @id @default(uuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialties        String[]
+  languages          String[]
+  licenseNumber      String
+  licenseCountry     String
+  diplomaUrls        String[]
+  verificationStatus VerificationStatus @default(PENDING)
+  bio                String?
+  yearsExperience    Int?
+  subscriptionTier   SubscriptionTier   @default(FREE)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  availability    DoctorAvailability?
+  plannedPresence PlannedPresence[]
+  appointments    Appointment[]
+
+  @@map("doctor_profiles")
+}
+
+model DoctorAvailability {
+  id               String           @id @default(uuid())
+  doctorId         String           @unique
+  doctor           DoctorProfile    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  isAvailable      Boolean          @default(false)
+  latitude         Float?
+  longitude        Float?
+  address          String?
+  availableFrom    DateTime?
+  availableUntil   DateTime?
+  consultationType ConsultationType @default(BOTH)
+  updatedAt        DateTime         @updatedAt
+
+  @@map("doctor_availabilities")
+}
+
+model PlannedPresence {
+  id          String        @id @default(uuid())
+  doctorId    String
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  latitude    Float
+  longitude   Float
+  address     String
+  startDate   DateTime
+  endDate     DateTime
+  description String?
+  createdAt   DateTime      @default(now())
+
+  @@map("planned_presences")
+}
+
+model Patient {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dateOfBirth      DateTime?
+  gender           String?
+  emergencyContact String?
+  insuranceInfo    String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  appointments   Appointment[]
+  medicalRecords MedicalRecord[]
+
+  @@map("patients")
+}
+
+model Appointment {
+  id          String            @id @default(uuid())
+  patientId   String
+  patient     Patient           @relation(fields: [patientId], references: [id])
+  doctorId    String
+  doctor      DoctorProfile     @relation(fields: [doctorId], references: [id])
+  scheduledAt DateTime
+  duration    Int               @default(30)
+  status      AppointmentStatus @default(PENDING)
+  type        AppointmentType
+  latitude    Float?
+  longitude   Float?
+  address     String?
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  payment Payment?
+
+  @@map("appointments")
+}
+
+model MedicalRecord {
+  id            String   @id @default(uuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  encryptedData Bytes
+  recordType    String
+  createdBy     String
+  createdAt     DateTime @default(now())
+
+  @@map("medical_records")
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  type        OrgType
+  description String?
+  region      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  missions MedicalMission[]
+
+  @@map("organizations")
+}
+
+model MedicalMission {
+  id                   String       @id @default(uuid())
+  orgId                String
+  organization         Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  title                String
+  description          String?
+  latitude             Float
+  longitude            Float
+  address              String
+  startDate            DateTime
+  endDate              DateTime
+  volunteersNeeded     Int          @default(1)
+  volunteersRegistered Int          @default(0)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@map("medical_missions")
+}
+
+model Payment {
+  id                    String      @id @default(uuid())
+  appointmentId         String      @unique
+  appointment           Appointment @relation(fields: [appointmentId], references: [id])
+  amount                Int
+  currency              String      @default("EUR")
+  method                String?
+  status                String      @default("pending")
+  stripePaymentIntentId String?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@map("payments")
+}
