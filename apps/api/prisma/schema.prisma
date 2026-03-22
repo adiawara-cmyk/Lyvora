@@ -52,6 +52,27 @@ enum OrgType {
   HOSPITAL
 }
 
+enum DocumentType {
+  ANALYSIS
+  PRESCRIPTION
+  REPORT
+  DIPLOMA
+  CERTIFICATE
+  OTHER
+}
+
+enum ReplacementStatus {
+  OPEN
+  FILLED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -72,6 +93,8 @@ model User {
   doctorProfile DoctorProfile?
   patient       Patient?
   organization  Organization?
+  documents     Document[]
+  cabinet       Cabinet?
 
   @@map("users")
 }
@@ -95,6 +118,10 @@ model DoctorProfile {
   availability    DoctorAvailability?
   plannedPresence PlannedPresence[]
   appointments    Appointment[]
+  workingHours    DoctorWorkingHours[]
+  fees            DoctorFee[]
+  reviews         DoctorReview[]
+  replacementApps ReplacementApplication[]
 
   @@map("doctor_profiles")
 }
@@ -143,6 +170,7 @@ model Patient {
 
   appointments   Appointment[]
   medicalRecords MedicalRecord[]
+  reviews        DoctorReview[]
 
   @@map("patients")
 }
@@ -164,7 +192,9 @@ model Appointment {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  payment Payment?
+  payment      Payment?
+  documents    Document[]
+  videoSession VideoSession?
 
   @@map("appointments")
 }
@@ -229,4 +259,130 @@ model Payment {
   updatedAt             DateTime    @updatedAt
 
   @@map("payments")
+}
+
+// === PHASE 2: Nouvelles fonctionnalites ===
+
+model DoctorWorkingHours {
+  id           String        @id @default(uuid())
+  doctorId     String
+  doctor       DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  dayOfWeek    Int           // 0=Dimanche, 1=Lundi, ..., 6=Samedi
+  startTime    String        // "09:00"
+  endTime      String        // "17:00"
+  slotDuration Int           @default(30) // minutes
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@unique([doctorId, dayOfWeek])
+  @@map("doctor_working_hours")
+}
+
+model DoctorFee {
+  id               String          @id @default(uuid())
+  doctorId         String
+  doctor           DoctorProfile   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  consultationType AppointmentType
+  label            String          @default("Consultation")
+  amount           Int             // en centimes (ex: 5000 = 50.00 EUR)
+  currency         String          @default("EUR")
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@unique([doctorId, consultationType])
+  @@map("doctor_fees")
+}
+
+model DoctorReview {
+  id        String        @id @default(uuid())
+  doctorId  String
+  doctor    DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  rating    Int           // 1-5
+  comment   String?
+  createdAt DateTime      @default(now())
+
+  @@unique([doctorId, patientId])
+  @@map("doctor_reviews")
+}
+
+model Document {
+  id            String        @id @default(uuid())
+  type          DocumentType
+  fileName      String
+  fileUrl       String
+  fileSize      Int           @default(0)
+  mimeType      String        @default("application/octet-stream")
+  uploadedById  String
+  uploadedBy    User          @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  appointmentId String?
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
+  description   String?
+  createdAt     DateTime      @default(now())
+
+  @@map("documents")
+}
+
+model VideoSession {
+  id            String      @id @default(uuid())
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  roomId        String      @unique
+  roomUrl       String
+  startedAt     DateTime    @default(now())
+  endedAt       DateTime?
+
+  @@map("video_sessions")
+}
+
+model Cabinet {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  latitude    Float
+  longitude   Float
+  phone       String?
+  description String?
+  managedById String   @unique
+  managedBy   User     @relation(fields: [managedById], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  replacementRequests ReplacementRequest[]
+
+  @@map("cabinets")
+}
+
+model ReplacementRequest {
+  id              String            @id @default(uuid())
+  cabinetId       String
+  cabinet         Cabinet           @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+  specialty       String
+  startDate       DateTime
+  endDate         DateTime
+  description     String?
+  status          ReplacementStatus @default(OPEN)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  applications ReplacementApplication[]
+
+  @@map("replacement_requests")
+}
+
+model ReplacementApplication {
+  id        String            @id @default(uuid())
+  requestId String
+  request   ReplacementRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  doctorId  String
+  doctor    DoctorProfile     @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  message   String?
+  status    ApplicationStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@unique([requestId, doctorId])
+  @@map("replacement_applications")
 }

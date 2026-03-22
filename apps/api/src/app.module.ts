@@ -10,6 +10,11 @@ import { AppointmentsModule } from "./modules/appointments/appointments.module";
 import { OrganizationsModule } from "./modules/organizations/organizations.module";
 import { StatsModule } from "./modules/stats/stats.module";
 import { AdminModule } from "./modules/admin/admin.module";
+import { DocumentsModule } from "./modules/documents/documents.module";
+import { ScheduleModule } from "./modules/schedule/schedule.module";
+import { VideoModule } from "./modules/video/video.module";
+import { CabinetsModule } from "./modules/cabinets/cabinets.module";
+import { NotificationsModule } from "./modules/notifications/notifications.module";
 
 @Module({
   imports: [
@@ -23,6 +28,11 @@ import { AdminModule } from "./modules/admin/admin.module";
     OrganizationsModule,
     StatsModule,
     AdminModule,
+    DocumentsModule,
+    ScheduleModule,
+    VideoModule,
+    CabinetsModule,
+    NotificationsModule,
   ],
   controllers: [HealthController],
 })
