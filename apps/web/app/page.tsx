@@ -91,6 +91,7 @@ const profiles = [
     color: "bg-blue-900",
     iconBg: "bg-blue-100",
     iconColor: "text-blue-600",
+    href: "/dashboard",
   },
   {
     title: "M\u00e9decin",
@@ -99,6 +100,7 @@ const profiles = [
     color: "bg-green-500",
     iconBg: "bg-green-100",
     iconColor: "text-green-600",
+    href: "/doctor",
   },
   {
     title: "Organisation",
@@ -107,6 +109,7 @@ const profiles = [
     color: "bg-purple-500",
     iconBg: "bg-purple-100",
     iconColor: "text-purple-600",
+    href: "/organization",
   },
   {
     title: "Admin",
@@ -115,6 +118,7 @@ const profiles = [
     color: "bg-orange-500",
     iconBg: "bg-orange-100",
     iconColor: "text-orange-500",
+    href: "/admin",
   },
 ];
 
@@ -257,7 +261,7 @@ export default function Home() {
                 {profile.description}
               </p>
               <Link
-                href={`/login?role=${profile.title.toLowerCase()}`}
+                href={profile.href}
                 className={`block w-full py-2.5 ${profile.color} text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity`}
               >
                 Acc&eacute;der &rarr;
