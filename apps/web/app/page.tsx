@@ -49,6 +49,22 @@ function ShieldIcon({ className }: { className?: string }) {
   );
 }
 
+function CabinetIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  );
+}
+
+function CommunityIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+  );
+}
+
 function GlobeIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -86,7 +102,7 @@ function ChartIcon({ className }: { className?: string }) {
 const profiles = [
   {
     title: "Patient",
-    description: "Trouvez un m\u00e9decin disponible pr\u00e8s de chez vous",
+    description: "Trouvez un m\u00e9decin pr\u00e8s de chez vous",
     icon: PatientIcon,
     color: "bg-blue-900",
     iconBg: "bg-blue-100",
@@ -95,12 +111,21 @@ const profiles = [
   },
   {
     title: "M\u00e9decin",
-    description: "G\u00e9rez votre disponibilit\u00e9 et vos consultations",
+    description: "G\u00e9rez vos disponibilit\u00e9s et consultations",
     icon: StethoscopeIcon,
     color: "bg-green-500",
     iconBg: "bg-green-100",
     iconColor: "text-green-600",
     href: "/doctor",
+  },
+  {
+    title: "Cabinet",
+    description: "Trouvez des m\u00e9decins rempla\u00e7ants",
+    icon: CabinetIcon,
+    color: "bg-cyan-600",
+    iconBg: "bg-cyan-100",
+    iconColor: "text-cyan-600",
+    href: "/cabinet",
   },
   {
     title: "Organisation",
@@ -112,8 +137,17 @@ const profiles = [
     href: "/organization",
   },
   {
+    title: "Collectivit\u00e9",
+    description: "Luttez contre les d\u00e9serts m\u00e9dicaux",
+    icon: CommunityIcon,
+    color: "bg-teal-600",
+    iconBg: "bg-teal-100",
+    iconColor: "text-teal-600",
+    href: "/collectivite",
+  },
+  {
     title: "Admin",
-    description: "G\u00e9rez la plateforme et les validations",
+    description: "G\u00e9rez la plateforme",
     icon: ShieldIcon,
     color: "bg-orange-500",
     iconBg: "bg-orange-100",
@@ -127,37 +161,37 @@ const steps = [
     number: 1,
     title: "G\u00e9olocalisation",
     description:
-      "Le syst\u00e8me d\u00e9tecte automatiquement votre position et trouve les m\u00e9decins disponibles pr\u00e8s de vous.",
+      "Le syst\u00e8me d\u00e9tecte votre position et trouve les m\u00e9decins disponibles pr\u00e8s de vous.",
     color: "bg-blue-600",
   },
   {
     number: 2,
     title: "Filtrage intelligent",
     description:
-      "Filtrez par sp\u00e9cialit\u00e9, langue parl\u00e9e, note, et disponibilit\u00e9 imm\u00e9diate ou future.",
+      "Filtrez par sp\u00e9cialit\u00e9, langue parl\u00e9e, note et disponibilit\u00e9.",
     color: "bg-green-500",
   },
   {
     number: 3,
     title: "R\u00e9servation instantan\u00e9e",
     description:
-      "R\u00e9servez votre consultation en quelques clics, en pr\u00e9sentiel ou en t\u00e9l\u00e9consultation.",
+      "R\u00e9servez en quelques clics, en pr\u00e9sentiel ou en t\u00e9l\u00e9consultation.",
     color: "bg-purple-500",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-2">
-              <MapPinIcon className="w-6 h-6 text-blue-800" />
-              <span className="text-xl font-bold text-blue-900">Lyvora</span>
+              <MapPinIcon className="w-5 h-5 text-blue-800" />
+              <span className="text-lg font-bold text-blue-900">Lyvora</span>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-5">
               <Link
                 href="/dashboard"
                 className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
@@ -174,121 +208,115 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section — compact */}
       <section className="relative overflow-hidden">
-        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-blue-50 to-teal-50" />
-        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-blue-400 via-teal-400 to-blue-300 opacity-60" />
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-400 via-teal-400 to-blue-300 opacity-60" />
 
-        <div className="relative max-w-4xl mx-auto px-4 py-10 sm:py-14 text-center">
-          {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-blue-800 rounded-xl flex items-center justify-center">
-              <HeartIcon className="w-6 h-6 text-green-400" />
+        <div className="relative max-w-4xl mx-auto px-4 py-8 sm:py-10 text-center">
+          <div className="flex items-center justify-center gap-2.5 mb-4">
+            <div className="w-9 h-9 bg-blue-800 rounded-lg flex items-center justify-center">
+              <HeartIcon className="w-5 h-5 text-green-400" />
             </div>
             <div className="text-left">
-              <h1 className="text-xl font-bold text-blue-900">Lyvora</h1>
-              <p className="text-xs text-gray-500">Healthcare, Anywhere</p>
+              <h1 className="text-lg font-bold text-blue-900 leading-none">Lyvora</h1>
+              <p className="text-[11px] text-gray-500">Healthcare, Anywhere</p>
             </div>
           </div>
 
-          {/* Title */}
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-blue-900 leading-tight mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-900 leading-tight mb-3">
             Trouvez un m&eacute;decin disponible
             <br />
             &agrave; moins d&apos;1 heure
           </h2>
 
-          <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-base sm:text-lg">
+          <p className="text-gray-600 max-w-xl mx-auto mb-5 text-sm sm:text-base">
             La premi&egrave;re plateforme mondiale qui connecte patients et
-            m&eacute;decins en temps r&eacute;el, partout dans le monde, pour
-            lutter contre les d&eacute;serts m&eacute;dicaux.
+            m&eacute;decins en temps r&eacute;el, pour lutter contre les
+            d&eacute;serts m&eacute;dicaux.
           </p>
 
-          {/* CTA Button */}
           <Link
             href="/register"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800 transition-colors text-base"
+            className="inline-flex items-center gap-2 px-7 py-2.5 bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800 transition-colors text-sm"
           >
             Commencer maintenant
             <ArrowRightIcon className="w-4 h-4" />
           </Link>
 
-          <p className="text-sm text-gray-500 mt-3">
-            Connectez-vous pour acc&eacute;der aux dashboards Patient,
-            M&eacute;decin, Organisation ou Admin
+          <p className="text-xs text-gray-400 mt-2">
+            Connectez-vous pour acc&eacute;der &agrave; votre espace
           </p>
 
-          {/* Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
-              <MapPinIcon className="w-4 h-4 text-blue-600" />
+          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5">
+            <div className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white rounded-full shadow-sm border border-gray-100 text-xs text-gray-700">
+              <MapPinIcon className="w-3.5 h-3.5 text-blue-600" />
               <span className="font-semibold">87 pays</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
-              <StethoscopeIcon className="w-4 h-4 text-green-600" />
+            <div className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white rounded-full shadow-sm border border-gray-100 text-xs text-gray-700">
+              <StethoscopeIcon className="w-3.5 h-3.5 text-green-600" />
               <span className="font-semibold">45,672 m&eacute;decins</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100 text-sm text-gray-700">
-              <ClockIcon className="w-4 h-4 text-purple-600" />
+            <div className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white rounded-full shadow-sm border border-gray-100 text-xs text-gray-700">
+              <ClockIcon className="w-3.5 h-3.5 text-purple-600" />
               <span className="font-semibold">12 min de r&eacute;ponse</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Profiles Section */}
-      <section className="max-w-5xl mx-auto px-4 py-14">
-        <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">
+      {/* Profiles Section — 6 cards in 2x3 or 3x2 grid */}
+      <section className="max-w-6xl mx-auto px-4 py-10">
+        <h3 className="text-xl font-bold text-center text-gray-900 mb-6">
           Choisissez votre profil
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {profiles.map((profile) => (
-            <div
+            <Link
               key={profile.title}
-              className="bg-white rounded-xl border border-gray-200 p-6 text-center hover:shadow-lg transition-shadow"
+              href={profile.href}
+              className="bg-white rounded-xl border border-gray-200 p-4 text-center hover:shadow-lg transition-shadow group"
             >
               <div
-                className={`w-12 h-12 ${profile.iconBg} rounded-full flex items-center justify-center mx-auto mb-4`}
+                className={`w-10 h-10 ${profile.iconBg} rounded-full flex items-center justify-center mx-auto mb-2.5`}
               >
-                <profile.icon className={`w-6 h-6 ${profile.iconColor}`} />
+                <profile.icon className={`w-5 h-5 ${profile.iconColor}`} />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-1">
+              <h4 className="font-semibold text-gray-900 text-sm mb-0.5">
                 {profile.title}
               </h4>
-              <p className="text-sm text-gray-500 mb-5">
+              <p className="text-[11px] text-gray-500 mb-3 leading-snug">
                 {profile.description}
               </p>
-              <Link
-                href={profile.href}
-                className={`block w-full py-2.5 ${profile.color} text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity`}
+              <span
+                className={`block w-full py-1.5 ${profile.color} text-white rounded-md text-xs font-medium group-hover:opacity-90 transition-opacity`}
               >
                 Acc&eacute;der &rarr;
-              </Link>
-            </div>
+              </span>
+            </Link>
           ))}
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="max-w-5xl mx-auto px-4 pb-14">
-        <h3 className="text-2xl font-bold text-center text-gray-900 mb-10">
+      {/* How it works — compact horizontal */}
+      <section className="max-w-4xl mx-auto px-4 pb-10">
+        <h3 className="text-xl font-bold text-center text-gray-900 mb-6">
           Comment &ccedil;a fonctionne ?
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps.map((step) => (
             <div key={step.number} className="text-center">
               <div
-                className={`w-14 h-14 ${step.color} rounded-full flex items-center justify-center mx-auto mb-5`}
+                className={`w-10 h-10 ${step.color} rounded-full flex items-center justify-center mx-auto mb-3`}
               >
-                <span className="text-white text-xl font-bold">
+                <span className="text-white text-sm font-bold">
                   {step.number}
                 </span>
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">{step.title}</h4>
-              <p className="text-sm text-gray-500 leading-relaxed">
+              <h4 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h4>
+              <p className="text-xs text-gray-500 leading-relaxed">
                 {step.description}
               </p>
             </div>
@@ -297,9 +325,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-6">
+      <footer className="border-t border-gray-200 py-4 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-xs text-gray-500">
             <span className="font-semibold text-gray-700">Lyvora</span> -
             R&eacute;volutionner l&apos;acc&egrave;s aux soins dans le monde
           </p>
