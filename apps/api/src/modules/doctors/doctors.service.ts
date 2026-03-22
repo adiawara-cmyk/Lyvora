@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
 import { PrismaService } from "../../database/prisma.service";
 import { SearchDoctorsDto } from "./dto/search-doctors.dto";
+import { AppointmentType } from "@prisma/client";
 
 @Injectable()
 export class DoctorsService {
@@ -146,6 +151,192 @@ export class DoctorsService {
     });
     if (!profile) throw new NotFoundException("Doctor profile not found");
     return profile.availability;
+  }
+
+  // === Fees ===
+
+  async setFees(
+    userId: string,
+    fees: { consultationType: AppointmentType; label?: string; amount: number; currency?: string }[],
+  ) {
+    const profile = await this.prisma.doctorProfile.findUnique({
+      where: { userId },
+    });
+    if (!profile) throw new NotFoundException("Doctor profile not found");
+
+    const results = [];
+    for (const fee of fees) {
+      const result = await this.prisma.doctorFee.upsert({
+        where: {
+          doctorId_consultationType: {
+            doctorId: profile.id,
+            consultationType: fee.consultationType,
+          },
+        },
+        create: {
+          doctorId: profile.id,
+          consultationType: fee.consultationType,
+          label: fee.label ?? "Consultation",
+          amount: fee.amount,
+          currency: fee.currency ?? "EUR",
+        },
+        update: {
+          label: fee.label ?? "Consultation",
+          amount: fee.amount,
+          currency: fee.currency ?? "EUR",
+        },
+      });
+      results.push(result);
+    }
+
+    return results;
+  }
+
+  async getFees(doctorId: string) {
+    return this.prisma.doctorFee.findMany({
+      where: { doctorId },
+    });
+  }
+
+  // === Reviews ===
+
+  async createReview(
+    patientUserId: string,
+    doctorId: string,
+    rating: number,
+    comment?: string,
+  ) {
+    const patient = await this.prisma.patient.findUnique({
+      where: { userId: patientUserId },
+    });
+    if (!patient) throw new NotFoundException("Patient profile not found");
+
+    // Verify patient has a completed appointment with this doctor
+    const completedAppointment = await this.prisma.appointment.findFirst({
+      where: {
+        patientId: patient.id,
+        doctorId,
+        status: "COMPLETED",
+      },
+    });
+    if (!completedAppointment) {
+      throw new BadRequestException(
+        "You can only review a doctor after a completed appointment",
+      );
+    }
+
+    // Check if already reviewed
+    const existing = await this.prisma.doctorReview.findUnique({
+      where: {
+        doctorId_patientId: {
+          doctorId,
+          patientId: patient.id,
+        },
+      },
+    });
+    if (existing) {
+      throw new BadRequestException("You have already reviewed this doctor");
+    }
+
+    return this.prisma.doctorReview.create({
+      data: {
+        doctorId,
+        patientId: patient.id,
+        rating,
+        comment: comment || null,
+      },
+    });
+  }
+
+  async getReviews(doctorId: string) {
+    const reviews = await this.prisma.doctorReview.findMany({
+      where: { doctorId },
+      include: {
+        patient: {
+          include: {
+            user: {
+              select: { firstName: true, lastName: true, avatar: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return {
+      reviews: reviews.map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        patientName: `${r.patient.user.firstName} ${r.patient.user.lastName}`,
+        patientAvatar: r.patient.user.avatar,
+        createdAt: r.createdAt,
+      })),
+      total: reviews.length,
+    };
+  }
+
+  // === Full Profile ===
+
+  async getFullProfile(doctorId: string) {
+    const doc = await this.prisma.doctorProfile.findUnique({
+      where: { id: doctorId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            email: true,
+          },
+        },
+        availability: true,
+        fees: true,
+        reviews: {
+          include: {
+            patient: {
+              include: {
+                user: {
+                  select: { firstName: true, lastName: true, avatar: true },
+                },
+              },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        },
+        workingHours: {
+          where: { isActive: true },
+          orderBy: { dayOfWeek: "asc" },
+        },
+        plannedPresence: {
+          where: { endDate: { gte: new Date() } },
+          orderBy: { startDate: "asc" },
+        },
+      },
+    });
+
+    if (!doc) throw new NotFoundException("Doctor not found");
+
+    // Calculate average rating
+    const avgRating =
+      doc.reviews.length > 0
+        ? doc.reviews.reduce((sum, r) => sum + r.rating, 0) / doc.reviews.length
+        : null;
+
+    return {
+      ...doc,
+      averageRating: avgRating ? Math.round(avgRating * 10) / 10 : null,
+      reviewCount: doc.reviews.length,
+      reviews: doc.reviews.map((r) => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        patientName: `${r.patient.user.firstName} ${r.patient.user.lastName}`,
+        patientAvatar: r.patient.user.avatar,
+        createdAt: r.createdAt,
+      })),
+    };
   }
 
   private haversineDistance(
